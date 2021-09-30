@@ -1,0 +1,98 @@
+pid_file: "/var/run/matrix-synapse.pid"
+
+# soft limit of file descriptors for synapse. 0 = hard limit
+soft_file_limit: 0
+
+# enable/disable presence tracking on this homeserver
+use_presence: true
+
+# the ports synapse listens on
+# configure X-Farwarded-For header in the reverse proxy
+no_tls: true
+listeners:
+  - port: 8008
+    type: http
+    tls: false
+    x_forwarded: true
+    resources:
+      - names: [client, federation]
+        compress: true
+  - port: 8009
+    type: metrics
+
+# The trusted servers to download signing keys from.
+perspectives:
+  servers:
+    "matrix.org":
+      verify_keys:
+        "ed25519:auto":
+          key: "Noi6WqcDj0QmPxCNQqgezwTlBKrfqehY1u2FyWP9uYw"
+
+# number of events to cache in memory
+event_cache_size: "10K"
+
+# yaml python logging config file
+log_config: "/etc/matrix-synapse/log.yml"
+verbose: 0
+
+# media directory
+media_store_path: "/var/lib/matrix-synapse/media"
+
+# directory for in-progress uploads
+uploads_path: "/var/lib/matrix-synapse/uploads"
+
+# the maximum number of pixels to thumbnail
+max_image_pixels: "32M"
+
+# whether to generate thumbnails on the fly to match the requested resolution
+dynamic_thumbnails: true
+
+# setup the url-preview api
+max_spider_size: "5M"
+url_preview_ip_range_blacklist:
+  - '127.0.0.0/8'
+  - '10.0.0.0/8'
+  - '172.16.0.0/12'
+  - '192.168.0.0/16'
+  - '100.64.0.0/10'
+  - '169.254.0.0/16'
+  - '::1/128'
+  - 'fe80::/64'
+  - 'fc00::/7'
+url_preview_url_blacklist:
+  - username: '*'
+  - scheme: 'http'
+  - scheme: 'file'
+  - netloc: '^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$'
+
+# bcrypt rounds for password hashing
+bcrypt_rounds: 12
+
+# A list of event types that will be included in the room_invite_state
+room_invite_state_types:
+  - "m.room.join_rules"
+  - "m.room.canonical_alias"
+  - "m.room.avatar"
+  - "m.room.encryption"
+  - "m.room.name"
+
+# enable access token expiration
+expire_access_token: false
+
+# path to the signing key
+signing_key_path: "/etc/matrix-synapse/conf.d/signing.key"
+
+# validity of key responses published by this server
+key_refresh_interval: "1d"
+
+# Whether to allow non server admins to create groups on this server
+enable_group_creation: false
+
+# enable alias creation on this homeserver
+alias_creation_rules:
+  - user_id: "*"
+    alias: "*"
+    action: allow
+
+# don't send stats
+report_stats: false
