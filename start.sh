@@ -1,5 +1,5 @@
-#!/bin/sh
-set -e
+#!/bin/bash
+set -eo pipefail
 
 pwlen="${SYNAPSE_SECRETS_LEN:-96}"
 confdir="/etc/matrix-synapse/"
@@ -77,11 +77,14 @@ write_server()
 
 write_turn()
 {
-	echo "turn_uris:"
-	echo "  - 'turn:${SYNAPSE_TURN_URI:-localhost}:5349?transport=tcp'"
-	echo "  - 'turn:${SYNAPSE_TURN_URI:-localhost}:5349?transport=udp'"
-	echo "turn_shared_secret: '${SYNAPSE_TURN_SECRET:-$(pwgen -ncs "$pwlen")}'"
-	echo "turn_allow_guests: ${SYNAPSE_TURN_GUESTS:-false}"
+	if [ -n "$SYNAPSE_TURN_URI" ]
+	then
+		echo "turn_uris:"
+		echo "  - 'turn:${SYNAPSE_TURN_URI}:5349?transport=tcp'"
+		echo "  - 'turn:${SYNAPSE_TURN_URI}:5349?transport=udp'"
+		echo "turn_shared_secret: '${SYNAPSE_TURN_SECRET:-$(pwgen -ncs "$pwlen")}'"
+		echo "turn_allow_guests: ${SYNAPSE_TURN_GUESTS:-false}"
+	fi
 }
 
 write_secrets()
@@ -104,7 +107,6 @@ write_to_file()
 
 
 # rewrite all non-secret config files
-
 write_to_file write_appservices "$confdir/conf.d/appservices.yaml"
 write_to_file write_database "$confdir/conf.d/database.yaml"
 write_to_file write_email "$confdir/conf.d/email.yaml"
