@@ -2,7 +2,9 @@ FROM rust:slim-bullseye AS healthcheck
 
 RUN mkdir /src
 WORKDIR /src
-COPY . .
+COPY Cargo.toml .
+COPY Cargo.lock .
+COPY src ./src
 RUN cargo build --release --locked \
  && strip target/release/healthcheck
 
@@ -10,17 +12,11 @@ RUN cargo build --release --locked \
 
 FROM debian:bullseye-slim
 
-COPY synapse.asc /tmp/synapse.asc
+COPY matrix-org-archive-keyring.gpg /etc/apt/trusted.gpg.d/
 RUN apt-get -y update \
- && apt-get -y install --no-install-recommends apt-transport-https ca-certificates gnupg \
- && apt-key add /tmp/synapse.asc \
- && rm /tmp/synapse.asc \
- && apt-get -y --purge autoremove apt-transport-https gnupg \
- && apt-get -y clean \
- && rm -rf /var/lib/apt/lists/*
-
-COPY synapse.list /etc/apt/sources.list.d/
-RUN apt-get -y update \
+ && apt-get -y install --no-install-recommends ca-certificates \
+ && echo "deb [arch=amd64] https://matrix.org/packages/debian bullseye main" >/etc/apt/sources.list.d/matrix-org.list \
+ && apt-get -y update \
  && apt-get -y install --no-install-recommends libgcc1 matrix-synapse-py3 pwgen python3-psycopg2 \
  && apt-get -y clean \
  && rm -rf /var/lib/apt/lists/* /etc/matrix-synapse/* \
