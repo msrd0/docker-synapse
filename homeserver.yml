@@ -23,10 +23,14 @@ listeners:
 # The trusted servers to download signing keys from.
 perspectives:
   servers:
-    "matrix.org":
+    "mozilla.org":
       verify_keys:
-        "ed25519:auto":
-          key: "Noi6WqcDj0QmPxCNQqgezwTlBKrfqehY1u2FyWP9uYw"
+        "ed25519:0":
+          key: "RsDggkM9GntoPcYySc8AsjvGoD0LVz5Ru/B/o5hV9h4"
+    "privacytools.io":
+      verify_keys:
+        "ed25519:a_UqmI":
+          key: "NlVbHUvTMqHQmpXCQwEsSwJwzPju1o+xgzeCr92mc04"
 
 # number of events to cache in memory
 event_cache_size: "10K"
@@ -67,14 +71,6 @@ url_preview_url_blacklist:
 
 # bcrypt rounds for password hashing
 bcrypt_rounds: 12
-
-# A list of event types that will be included in the room_invite_state
-room_invite_state_types:
-  - "m.room.join_rules"
-  - "m.room.canonical_alias"
-  - "m.room.avatar"
-  - "m.room.encryption"
-  - "m.room.name"
 
 # enable access token expiration
 expire_access_token: false
