@@ -24,7 +24,8 @@ RUN apt-get -y update \
  && chown -R matrix-synapse /etc/matrix-synapse/
 
 COPY homeserver.yml log.yml /etc/matrix-synapse/
-COPY start.sh /start.sh
+COPY start.sh /usr/local/bin/
+COPY version.sh /usr/local/bin/
 
 EXPOSE 8008
 VOLUME /etc/matrix-synapse/conf.d/
@@ -35,4 +36,4 @@ HEALTHCHECK CMD ["/usr/local/bin/healthcheck"]
 
 USER matrix-synapse
 WORKDIR /var/lib/matrix-synapse/
-CMD ["/start.sh"]
+CMD ["/usr/local/bin/start.sh"]

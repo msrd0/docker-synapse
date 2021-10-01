@@ -1,0 +1,23 @@
+name: Docker
+on:
+  push:
+    branches: [main]
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      
+      - name: Build and Push Docker Image
+        run: |
+          image="ghcr.io/msrd0/synapse"
+          docker build . \
+            --pull \
+            --tag "$image"
+          version="$(docker run --rm "$image" /usr/local/bin/version.sh)"
+          docker tag "$image" "$image:$version"
+          
+          docker login -u msrd0 -p "${{ secrets.GHCR_TOKEN }}" ghcr.io
+          docker push "$image:$version"
+          docker push "$image"
