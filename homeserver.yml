@@ -7,7 +7,7 @@ soft_file_limit: 0
 use_presence: true
 
 # the ports synapse listens on
-# configure X-Farwarded-For header in the reverse proxy
+# configure X-Forwarded-For header in the reverse proxy
 no_tls: true
 listeners:
   - port: 8008
