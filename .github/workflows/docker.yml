@@ -20,6 +20,6 @@ jobs:
           version="$(docker run --rm "$image" /usr/local/bin/version.sh)"
           docker tag "$image" "$image:$version"
           
-          docker login -u msrd0 -p "${{ secrets.GHCR_TOKEN }}" ghcr.io
+          docker login -u msrd0 -p "${{secrets.GITHUB_TOKEN}}" ghcr.io
           docker push "$image:$version"
           docker push "$image"
