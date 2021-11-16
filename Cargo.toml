@@ -4,10 +4,10 @@
 name = "healthcheck"
 version = "0.0.0"
 publish = false
-edition = "2018"
+edition = "2021"
 
 [dependencies]
-attohttpc = { version = "0.17", default-features = false }
+attohttpc = { version = "0.18", default-features = false }
 
 [profile.release]
 lto = true
