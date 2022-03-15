@@ -58,6 +58,7 @@ steps:
   - name: docker
     image: docker:dind
     commands:
+      - /usr/local/bin/dockerd-entrypoint.sh
       - docker build . --pull --tag $IMAGE
       - docker run --rm $IMAGE /usr/local/bin/version.sh >version
       - docker tag $IMAGE $IMAGE:$(cat version)
