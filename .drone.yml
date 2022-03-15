@@ -56,7 +56,7 @@ trigger:
 
 steps:
   - name: docker
-    image: docker:dind
+    image: docker
     commands:
       - /usr/local/bin/dockerd-entrypoint.sh
       - docker build . --pull --tag $IMAGE
@@ -68,6 +68,10 @@ steps:
     environment:
       GHCR_TOKEN:
         from_secret: GHCR_TOKEN
+      IMAGE: ghcr.io/msrd0/synapse
+    volumes:
+      - name: dockersock
+        path: /var/run
   
   - name: notify
     image: drillster/drone-email
@@ -82,8 +86,16 @@ steps:
       status:
         - failure
 
-environment:
-  DOCKER_HOST: unix:///var/run/docker.sock
-  IMAGE: ghcr.io/msrd0/synapse
+services:
+  - name: docker
+    image: docker:dind
+    privileged: true
+    volumes:
+      - name: dockersock
+        path: /var/run
+
+volumes:
+  - name: dockersock
+    temp: {}
 
 ...
