@@ -98,4 +98,8 @@ volumes:
   - name: dockersock
     temp: {}
 
+---
+kind: signature
+hmac: 98abc719f85cb9de123b95c1ff3ef28764aaf6c65b5cc3dc68ea59e92741dab6
+
 ...
