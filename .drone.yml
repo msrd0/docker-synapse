@@ -58,6 +58,7 @@ steps:
   - name: docker
     image: docker
     commands:
+      - for i in $(seq 1 10); do docker ps &>/dev/null && break || true; sleep 1s; done
       - docker build . --pull --tag $IMAGE
       - docker run --rm $IMAGE /usr/local/bin/version.sh >version
       - docker tag $IMAGE $IMAGE:$(cat version)
@@ -99,6 +100,6 @@ volumes:
 
 ---
 kind: signature
-hmac: 2a9f3a4e3a72a4a2055ac629bc9ce033b81d289c01f52bd0855f5eedd56c9add
+hmac: b73d55579c97e5205b2316956e1701263de0a81168e9138759b44a319d71115a
 
 ...
