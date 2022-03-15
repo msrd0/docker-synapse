@@ -1,0 +1,87 @@
+---
+kind: pipeline
+name: rustfmt
+
+trigger:
+  branch:
+    - main
+  event:
+    - custom
+    - push
+  status:
+    - success
+
+steps:
+  - name: rustfmt
+    image: alpine
+    pull: always
+    commands:
+      - apk add rustup
+      - rustup-init -qy --default-host x86_64-unknown-linux-musl --default-toolchain none </dev/null
+      - source $CARGO_HOME/env
+      - rustup toolchain install nightly --profile minimal --component rustfmt
+      - cargo -V
+      - cargo fmt -- -V
+      - cargo fmt -- --check -l
+  
+  - name: notify
+    image: drillster/drone-email
+    pull: always
+    settings:
+      host: smtp.migadu.com
+      username: noreply@drone.msrd0.eu
+      from: noreply@drone.msrd0.eu
+      password:
+        from_secret: SMTP_PASSWORD
+    when:
+      status:
+        - failure
+
+environment:
+  CARGO_HOME: target/cargo
+
+---
+kind: pipeline
+name: docker
+
+trigger:
+  branch:
+    - main
+  event:
+    - cron
+    - custom
+    - push
+  status:
+    - success
+
+steps:
+  - name: docker
+    image: docker:dind
+    commands:
+      - docker build . --pull --tag $IMAGE
+      - docker run --rm $IMAGE /usr/local/bin/version.sh >version
+      - docker tag $IMAGE $IMAGE:$(cat version)
+      - docker login -u msrd0 -p $GHCR_TOKEN ghcr.io
+      - docker push $IMAGE:$(cat version)
+      - docker push $IMAGE
+  
+  - name: notify
+    image: drillster/drone-email
+    pull: always
+    settings:
+      host: smtp.migadu.com
+      username: noreply@drone.msrd0.eu
+      from: noreply@drone.msrd0.eu
+      password:
+        from_secret: SMTP_PASSWORD
+    when:
+      status:
+        - failure
+
+environment:
+  DOCKER_HOST: unix:///var/run/docker.sock
+  IMAGE: ghcr.io/msrd0/synapse
+  GHCR_TOKEN:
+    from_secret: GHCR_TOKEN
+
+...
