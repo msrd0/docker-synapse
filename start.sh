@@ -26,6 +26,7 @@ write_database()
 {
 	echo "database:"
 	echo "  name: 'psycopg2'"
+	echo "  allow_unsafe_locale: true"
 	echo "  args:"
 	echo "    user: '${SYNAPSE_DB_USER:-postgres}'"
 	echo "    password: '${SYNAPSE_DB_PASSWORD:-postgres}'"
