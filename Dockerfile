@@ -31,7 +31,7 @@ EXPOSE 8008
 VOLUME /etc/matrix-synapse/conf.d/
 VOLUME /var/lib/matrix-synapse/
 
-COPY --from=healthcheck /src/target/release/healthcheck /usr/local/bin/ealthcheck
+COPY --from=healthcheck /src/target/release/healthcheck /usr/local/bin/healthcheck
 HEALTHCHECK CMD ["/usr/local/bin/healthcheck"]
 
 USER matrix-synapse
